@@ -71,9 +71,6 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-indigo-600">PacePal Dashboard</h1>
           <div className="flex items-center gap-4">
             <span className="font-medium">Hi, {user}!</span>
-            <button onClick={handleLogout} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-              Logout
-            </button>
           </div>
         </div>
 
