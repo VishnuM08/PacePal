@@ -29,7 +29,7 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
@@ -49,5 +49,16 @@ public class AuthController {
 
         String jwt = jwtUtils.generateJwtToken(authentication.getName());
         return ResponseEntity.ok(new JwtResponse(jwt, authentication.getName()));
+    }
+    
+    @PutMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetRequest resetRequest) {
+        return userRepository.findByUsername(resetRequest.getUsername())
+            .map(user -> {
+                user.setPassword(passwordEncoder.encode(resetRequest.getNewPassword()));
+                userRepository.save(user);
+                return ResponseEntity.ok("Password updated successfully!");
+            })
+            .orElse(ResponseEntity.badRequest().body("Error: User not found!"));
     }
 }
