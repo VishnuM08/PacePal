@@ -39,4 +39,18 @@ public class StudySessionController {
     public List<StudySession> getUserHistory(Authentication authentication) {
         return studySessionRepository.findByUserUsername(authentication.getName());
     }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSession(@PathVariable Long id, Authentication authentication) {
+        return studySessionRepository.findById(id)
+            .map(session -> {
+                // Security check: Ensure the session belongs to the person trying to delete it
+                if (!session.getUser().getUsername().equals(authentication.getName())) {
+                    return ResponseEntity.status(403).body("Error: Unauthorized to delete this session");
+                }
+                studySessionRepository.delete(session);
+                return ResponseEntity.ok("Session deleted successfully");
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
 }
