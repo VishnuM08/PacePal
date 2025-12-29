@@ -9,7 +9,7 @@ interface TimerProps {
 }
 
 export default function Timer({ onSave }: TimerProps) {
-    const [seconds, setSeconds] = useState(10); // Set to 10 for quick testing
+    const [seconds, setSeconds] = useState(60); // Set to 10 for quick testing
     const [isActive, setIsActive] = useState(false);
     const [topic, setTopic] = useState('');
 

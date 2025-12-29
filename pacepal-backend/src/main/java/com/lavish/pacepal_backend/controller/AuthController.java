@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.lavish.pacepal_backend.model.User;
 import com.lavish.pacepal_backend.repository.UserRepository;
 import com.lavish.pacepal_backend.security.JwtUtils;
+import com.lavish.pacepal_backend.service.UserService;
 import com.lavish.pacepal_backend.dto.*;
 
 @RestController
@@ -29,18 +30,21 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
+
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Securely hash password
-        user.setRole("ROLE_USER");
-        userRepository.save(user);
+        userService.registerUser(user);
 
         return ResponseEntity.ok("User registered successfully!");
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
